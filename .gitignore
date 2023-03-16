@@ -1,0 +1,13 @@
+.idea
+*.iml
+/out
+/build
+.iws
+*.ipr
+HELP.md
+target/
+.DS_Store
+settings.gradle
+gradlew.bat
+gradlew
+.gradle
