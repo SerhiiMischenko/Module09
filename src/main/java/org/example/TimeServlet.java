@@ -16,34 +16,36 @@ public class TimeServlet extends HttpServlet {
         protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
             ZonedDateTime now;
             String timeZone = req.getParameter ("timezone");
+            Cookie cookie;
             if(timeZone == null) {
-                now = ZonedDateTime.now(ZoneId.of("UTC"));
-                resp.setContentType("text/html; charset=utf-8");
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
-                String formattedDate = now.format(formatter);
-                resp.getWriter().write(formattedDate);
-                resp.getWriter().close();
-            }else {
-                Cookie cookie = new Cookie("lastTimezone", timeZone.replace(" ", "+"));
-                cookie.setMaxAge(24 * 60 * 60);
-                resp.addCookie(cookie);
                 Cookie[] cookies = req.getCookies();
-                for (int i = 0; i < cookies.length; i++) {
+                try {
                     now = ZonedDateTime.now(ZoneId.of(cookies[0].getValue()));
                     resp.setContentType("text/html; charset=utf-8");
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
                     String formattedDate = now.format(formatter);
                     resp.getWriter().write(formattedDate);
                     resp.getWriter().close();
+
+                }catch (NullPointerException e) {
+                    now = ZonedDateTime.now(ZoneId.of("UTC"));
+                    resp.setContentType("text/html; charset=utf-8");
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
+                    String formattedDate = now.format(formatter);
+                    resp.getWriter().write(formattedDate);
+                    resp.getWriter().close();
                 }
-//                for (Cookie coo : cookies) {
-//                    now = ZonedDateTime.now(ZoneId.of(coo.getValue()));
-//                    resp.setContentType("text/html; charset=utf-8");
-//                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
-//                    String formattedDate = now.format(formatter);
-//                    resp.getWriter().write(formattedDate);
-//                    resp.getWriter().close();
-//                }
+
+            }else {
+                now = ZonedDateTime.now(ZoneId.of(timeZone.replace(" ", "+")));
+                cookie = new Cookie("lastTimezone", timeZone.replace(" ", "+"));
+                cookie.setMaxAge(24 * 60 * 60);
+                resp.addCookie(cookie);
+                resp.setContentType("text/html; charset=utf-8");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
+                String formattedDate = now.format(formatter);
+                resp.getWriter().write(formattedDate);
+                resp.getWriter().close();
             }
         }
     }
