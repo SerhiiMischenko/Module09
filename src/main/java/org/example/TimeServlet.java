@@ -4,7 +4,6 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -21,7 +20,7 @@ public class TimeServlet extends HttpServlet {
     private TemplateEngine engine;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         engine = new TemplateEngine();
         FileTemplateResolver resolver = new FileTemplateResolver();
         resolver.setPrefix("/Users/serhiimischenko/IdeaProjects/Module08/templates/");
@@ -34,6 +33,7 @@ public class TimeServlet extends HttpServlet {
 
     @Override
         protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+            resp.setContentType("text/html; charset=utf-8");
             ZonedDateTime now;
             String timeZone = req.getParameter ("timezone");
             Cookie cookie;
@@ -41,7 +41,6 @@ public class TimeServlet extends HttpServlet {
                 Cookie[] cookies = req.getCookies();
                 try {
                     now = ZonedDateTime.now(ZoneId.of(cookies[0].getValue()));
-                    resp.setContentType("text/html; charset=utf-8");
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
                     String formattedDate = now.format(formatter);
                     Context simpleContext = new Context (
@@ -53,7 +52,6 @@ public class TimeServlet extends HttpServlet {
 
                 }catch (NullPointerException e) {
                     now = ZonedDateTime.now(ZoneId.of("UTC"));
-                    resp.setContentType("text/html; charset=utf-8");
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
                     String formattedDate = now.format(formatter);
                     Context simpleContext = new Context (
@@ -69,7 +67,6 @@ public class TimeServlet extends HttpServlet {
                 cookie = new Cookie("lastTimezone", timeZone.replace(" ", "+"));
                 cookie.setMaxAge(24 * 60 * 60);
                 resp.addCookie(cookie);
-                resp.setContentType("text/html; charset=utf-8");
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
                 String formattedDate = now.format(formatter);
                 Context simpleContext = new Context (
