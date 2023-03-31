@@ -1,5 +1,9 @@
 package org.example;
 
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.templateresolver.FileTemplateResolver;
+
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -12,7 +16,21 @@ import java.time.format.DateTimeFormatter;
 
 @WebServlet(value = "/time")
 public class TimeServlet extends HttpServlet {
-        @Override
+    private TemplateEngine engine;
+
+    @Override
+    public void init() throws ServletException {
+        engine = new TemplateEngine();
+        FileTemplateResolver resolver = new FileTemplateResolver();
+        resolver.setPrefix("./templates/");
+        resolver.setSuffix(".html");
+        resolver.setTemplateMode("HTML5");
+        resolver.setOrder(engine.getTemplateResolvers().size());
+        resolver.setCacheable(false);
+        engine.addTemplateResolver(resolver);
+    }
+
+    @Override
         protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
             ZonedDateTime now;
             String timeZone = req.getParameter ("timezone");
