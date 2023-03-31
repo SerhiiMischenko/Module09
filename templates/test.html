@@ -8,10 +8,10 @@
     <title>Document</title>
 </head>
 <body>
-<h1 th:text="'Variable count: ' + ${queryParams.size()}"></h1>
+<h1 th:text="${UTC}"></h1>
 
 <ul>
-    <li th:each="queryParam: ${queryParams}">
+    <li th:each="${queryParams}">
         <span th:text="${queryParam.key}"></span>
         =
         <span th:text="${queryParam.value}"></span>

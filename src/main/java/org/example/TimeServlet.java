@@ -1,6 +1,7 @@
 package org.example;
 
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import javax.servlet.ServletException;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 @WebServlet(value = "/time")
 public class TimeServlet extends HttpServlet {
@@ -22,7 +24,7 @@ public class TimeServlet extends HttpServlet {
     public void init() throws ServletException {
         engine = new TemplateEngine();
         FileTemplateResolver resolver = new FileTemplateResolver();
-        resolver.setPrefix("./templates/");
+        resolver.setPrefix("/Users/serhiimischenko/IdeaProjects/Module08/templates/");
         resolver.setSuffix(".html");
         resolver.setTemplateMode("HTML5");
         resolver.setOrder(engine.getTemplateResolvers().size());
@@ -42,7 +44,11 @@ public class TimeServlet extends HttpServlet {
                     resp.setContentType("text/html; charset=utf-8");
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
                     String formattedDate = now.format(formatter);
-                    resp.getWriter().write(formattedDate);
+                    Context simpleContext = new Context (
+                            req.getLocale (),
+                            Map. of ("UTC", formattedDate)
+);
+                    engine.process ("test", simpleContext, resp.getWriter());
                     resp.getWriter().close();
 
                 }catch (NullPointerException e) {
@@ -50,7 +56,11 @@ public class TimeServlet extends HttpServlet {
                     resp.setContentType("text/html; charset=utf-8");
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
                     String formattedDate = now.format(formatter);
-                    resp.getWriter().write(formattedDate);
+                    Context simpleContext = new Context (
+                            req.getLocale (),
+                            Map. of ("UTC", formattedDate)
+                    );
+                    engine.process ("test", simpleContext, resp.getWriter());
                     resp.getWriter().close();
                 }
 
@@ -62,7 +72,11 @@ public class TimeServlet extends HttpServlet {
                 resp.setContentType("text/html; charset=utf-8");
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
                 String formattedDate = now.format(formatter);
-                resp.getWriter().write(formattedDate);
+                Context simpleContext = new Context (
+                        req.getLocale (),
+                        Map. of ("UTC", formattedDate)
+                );
+                engine.process ("test", simpleContext, resp.getWriter());
                 resp.getWriter().close();
             }
         }
